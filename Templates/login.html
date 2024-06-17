@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form id="login-form">
+        Username: <input type="text" id="username"><br>
+        Password: <input type="password" id="password"><br>
+        <button type="button" onclick="login()">Login</button>
+    </form>
+    <a href="/register">Register</a>
+    <script>
+        function login() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            fetch('/authenticate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username, password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.authenticated) {
+                    window.location.href = '/dataset_maker';
+                } else {
+                    alert('Authentication failed');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
