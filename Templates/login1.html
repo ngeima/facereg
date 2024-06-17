@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Register</title>
+    <style>
+        /* Your CSS styles here */
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login/Register</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" id="login-button">Login</button>
+            <button type="button" id="register-button">Register</button>
+        </form>
+        <p id="error-message" class="error-message"></p>
+    </div>
+
+    <script>
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            if (!username.trim() || !password.trim()) {
+                document.getElementById("error-message").textContent = "Username and password cannot be empty";
+                return;
+            }
+
+            // Send username and password to server for authentication
+            fetch('/authenticate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username, password: password })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.authenticated) {
+                    // Redirect to dataset maker page upon successful login
+                    window.location.href = "/dataset_maker";
+                } else {
+                    document.getElementById("error-message").textContent = "Invalid username or password";
+                }
+            })
+            .catch(error => {
+                console.error('There was an error!', error);
+            });
+        });
+
+        document.getElementById("register-button").addEventListener("click", function() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            if (!username.trim() || !password.trim()) {
+                document.getElementById("error-message").textContent = "Username and password cannot be empty";
+                return;
+            }
+
+            // Here you can implement the registration logic, e.g., sending data to a server
+            // For simplicity, we'll just display a message indicating successful registration
+            document.getElementById("error-message").textContent = "User registered successfully!";
+        });
+    </script>
+</body>
+</html>
